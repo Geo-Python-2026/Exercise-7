@@ -6,7 +6,7 @@ This week we'll put together our data analysis and plotting skills using pandas 
 
 - **Exercise 7 is due by 23:59 on Monday, October 20st, 2025**.
 - **Remember to save and commit your changes locally, and push your changes to GitHub after each major change**!
-- **[Working in pairs](https://geo-python-site.readthedocs.io/en/latest/lessons/L2/why-pairs.html) is optional on this exercise**. If you prefer to work alone, please be sure to inform the course assistants. Otherwise, and we will only grade the repository of the member of your pair that is responsible for this week's exercise.
+
 
 ## Where to find help
 
