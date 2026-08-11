@@ -6,14 +6,19 @@ on:
   pull_request_target:
     paths: 
       - '*.ipynb'
-    types: [synchronize, reopened]
+    types: [opened, synchronize, reopened]
   workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: write
 
 jobs:
   grade-assignment:
     name: Compute a preliminary grade
     runs-on: ubuntu-latest
     container: python:3.13.2
+    timeout-minutes: 15
     steps:
       - name: Checkout head
         uses: actions/checkout@v3
@@ -40,7 +45,7 @@ jobs:
           cd head
           python .tests/grade-assignment.py >> $GITHUB_OUTPUT
       - name: Add a comment to the pull request
-        uses: Geo-Python-2025/create-or-update-comment@v4
+        uses: Geo-Python-2026/create-or-update-comment@b78cb5fdafdce7a955b9f391405deae19e32386d
         env: ${{ fromJSON(steps.grading.outputs.FEEDBACK) }}
         with:
           

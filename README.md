@@ -4,7 +4,7 @@ This week we'll put together our data analysis and plotting skills using pandas 
 
 ## Completing the exercise
 
-- **Exercise 7 is due by 23:59 on Monday, October 20st, 2025**.
+- **Exercise 7 is due by 23:59 on Monday, October 19th, 2026**.
 - **Remember to save and commit your changes locally, and push your changes to GitHub after each major change**!
 
 

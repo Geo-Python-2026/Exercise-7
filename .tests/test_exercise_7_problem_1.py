@@ -36,7 +36,7 @@ class TestProblem1:
         section = "Part 3"  # Define the section key
         variables = section_data[section]['variables']
 
-        assert 'x-label' in variables
+        assert 'xlabel' in variables
 
     @points(0.5, "Problem 1, Part 3: Did you add an y-label to your plot?")
     def test_problem_1_part_3_ylabel(self, problem1):
@@ -44,4 +44,4 @@ class TestProblem1:
         section = "Part 3"  # Define the section key
         variables = section_data[section]['variables']
 
-        assert 'y-label' in variables
+        assert 'ylabel' in variables
