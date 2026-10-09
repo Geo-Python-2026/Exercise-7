@@ -26,3 +26,7 @@ Exercise 7 has two problems worth 10 points in total.
 
  - [Problem 1: A scatter plot of random points (3 points)](Exercise-7-problem-1.ipynb)
  - [Problem 2: Plotting temperatures (7 points)](Exercise-7-problem-2.ipynb)
+
+## About grading
+
+You will get an automatic score when you push your work, but **this score is only indicative**. Because this exercise is about visualization, the automated checks cannot fully judge your plots, so all submissions will be graded manually. Your final grade may differ from the automatic score.
