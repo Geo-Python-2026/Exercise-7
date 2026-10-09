@@ -1,47 +1,86 @@
-from points_decorator import points
-import inspect
+import os
+
+import numpy as np
 import pandas as pd
+from matplotlib.colors import to_rgba_array
+
+from points_decorator import points
+from plot_checks import (
+    section, scatter_collections, titles, all_axes, norm, is_valid_png, as_float_array,
+)
+
+N_POINTS = 1000
+
 
 class TestProblem1:
-    @points(0.5, "Problem 1, Part 1: Did you create a dataframe `data` with 1000 random values?")
+    @points(0.5, "Problem 1, Part 1: Did you create a DataFrame `data` with columns `x` and `y` holding 1000 random float values?")
     def test_problem_1_part_1(self, problem1):
         section_data, namespace = problem1
-        section = "Part 1"
-        variables = section_data[section]['variables']
+        variables = section(section_data, "Part 1")["variables"]
 
-        assert isinstance(variables['data'], pd.DataFrame)
-        assert len(variables['data']) == 1000
+        data = variables["data"]
+        assert isinstance(data, pd.DataFrame)
+        assert len(data) == N_POINTS
+        for col in ("x", "y"):
+            assert col in data.columns
+            values = as_float_array(data[col])
+            # Random values should not all be the same
+            assert len(np.unique(values)) > 1
 
-    @points(0.5, "Problem 1, Part 2: Did you create 1000 random values for colors?")
+    @points(0.5, "Problem 1, Part 2: Did you create a variable `colors` holding 1000 random float values?")
     def test_problem_1_part_2(self, problem1):
         section_data, namespace = problem1
-        section = "Part 2"  # Define the section key
-        variables = section_data[section]['variables']
+        variables = section(section_data, "Part 2")["variables"]
 
-        assert len(variables['colors']) == 1000
-        assert type(variables['colors'][0]) == float
+        colors = variables["colors"]
+        assert len(colors) == N_POINTS
+        values = as_float_array(colors)
+        assert len(np.unique(values)) > 1
 
-    @points(1, "Problem 1, Part 3: Did you add a title to your plot?")
+    @points(0.5, "Problem 1, Part 3: Your figure should be a scatter plot of the 1000 points coloured with the random `colors` values.")
+    def test_problem_1_part_3_scatter(self, problem1):
+        section_data, namespace = problem1
+        figures = section(section_data, "Part 3")["figures"]
+        assert figures, "No figure was created in Part 3"
+
+        scatters = [coll for _, coll in scatter_collections(figures)
+                    if len(coll.get_offsets()) == N_POINTS]
+        assert scatters, "No scatter plot with 1000 points found"
+
+        coll = scatters[0]
+        mapped = coll.get_array()
+        if mapped is not None and len(mapped) == N_POINTS:
+            # Colours given as values + colormap
+            assert len(np.unique(np.asarray(mapped))) > 1
+        else:
+            # Colours given directly
+            facecolors = to_rgba_array(coll.get_facecolor())
+            assert len(np.unique(facecolors, axis=0)) > 1
+
+    @points(0.5, "Problem 1, Part 3: Did you add a title to your plot (stored in the variable `title`)?")
     def test_problem_1_part_3_title(self, problem1):
         section_data, namespace = problem1
-        section = "Part 3"  # Define the section key
-        variables = section_data[section]['variables']
+        part = section(section_data, "Part 3")
+        title = part["variables"]["title"]
+        assert isinstance(title, str) and title.strip()
+        assert norm(title) in [norm(t) for t in titles(part["figures"])]
 
-        assert 'title' in variables
-        
-    
-    @points(0.5, "Problem 1, Part 3: Did you add an x-label to your plot?")
-    def test_problem_1_part_3_xlabel(self, problem1):
+    @points(0.5, "Problem 1, Part 3: Did you add x- and y-labels to your plot (stored in the variables `xlabel` and `ylabel`)?")
+    def test_problem_1_part_3_labels(self, problem1):
         section_data, namespace = problem1
-        section = "Part 3"  # Define the section key
-        variables = section_data[section]['variables']
+        part = section(section_data, "Part 3")
+        xlabel = part["variables"]["xlabel"]
+        ylabel = part["variables"]["ylabel"]
+        assert isinstance(xlabel, str) and xlabel.strip()
+        assert isinstance(ylabel, str) and ylabel.strip()
 
-        assert 'xlabel' in variables
+        axes = all_axes(part["figures"])
+        assert norm(xlabel) in [norm(ax.get_xlabel()) for ax in axes]
+        assert norm(ylabel) in [norm(ax.get_ylabel()) for ax in axes]
 
-    @points(0.5, "Problem 1, Part 3: Did you add an y-label to your plot?")
-    def test_problem_1_part_3_ylabel(self, problem1):
+    @points(0.5, "Problem 1, Part 3: Did you save your plot as a PNG file `my_first_plot.png` using the variable `outputfp`?")
+    def test_problem_1_part_3_saved(self, problem1):
         section_data, namespace = problem1
-        section = "Part 3"  # Define the section key
-        variables = section_data[section]['variables']
-
-        assert 'ylabel' in variables
+        outputfp = section(section_data, "Part 3")["variables"]["outputfp"]
+        assert os.path.basename(str(outputfp)) == "my_first_plot.png"
+        assert is_valid_png(outputfp)

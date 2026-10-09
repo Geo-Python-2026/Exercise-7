@@ -136,6 +136,14 @@ def format_feedback(student_username, points_counter):
             "the work sessions or post a question on Slack!"
         )
 
+    body += (
+        "\n\n---\n"
+        "**Note:** This score is only indicative. Because this exercise is "
+        "about visualization, the automated checks cannot fully judge your "
+        "plots. All submissions will be graded manually, and your final "
+        "grade may differ from the score shown here."
+    )
+
     return body, reaction
 
 
